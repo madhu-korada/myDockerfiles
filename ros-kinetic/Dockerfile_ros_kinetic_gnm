@@ -4,14 +4,19 @@ FROM $PARENT_IMAGE
 # FROM ubuntu:16.04
 
 # Use DEBIAN_FRONTEND=noninteractive to make things noninteractive and Set timezone using TZ=US/Eastern
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=US/Eastern 
+RUN apt-get update  
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=US/Eastern 
 
 # This is very important which will setup keybord conf and not ask for the user input in the later stage 
+RUN apt-get -y install tzdata
 RUN apt install -y keyboard-configuration
 
 RUN apt install -y sudo cmake git mlocate curl wget vim gedit meld
 RUN apt install -y apt-utils net-tools build-essential ca-certificates gnupg-agent lsb-release
 RUN apt install -y apt-transport-https
+RUN apt install -y software-properties-common
+
 
 # ROS Neotic
 RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -28,6 +33,7 @@ RUN rosdep update
 
 RUN apt-get update
 RUN apt-get install -y python3-catkin-tools
+RUN apt-get install -y ros-kinetic-usb-cam ros-kinetic-joy
 
 # order of the arguments is important
 ARG USER_ID
@@ -42,3 +48,5 @@ RUN echo "${USER_NAME}:${USER_PASS}" | chpasswd
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /home/${USER_NAME}
+
+# RUN curl 'https://raw.githubusercontent.com/facebookresearch/pyrobot/main/robots/LoCoBot/install/locobot_install_all.sh' > locobot_install_all.sh
