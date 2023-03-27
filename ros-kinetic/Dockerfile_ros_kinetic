@@ -1,0 +1,46 @@
+ARG PARENT_IMAGE
+FROM $PARENT_IMAGE
+
+# order of the arguments is important
+ARG USER_ID
+ARG USER_NAME
+# FROM ubuntu:16.04
+
+# Use DEBIAN_FRONTEND=noninteractive to make things noninteractive and Set timezone using TZ=US/Eastern
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive TZ=US/Eastern 
+
+# This is very important which will setup keybord conf and not ask for the user input in the later stage 
+RUN apt install -y keyboard-configuration
+
+RUN apt install -y sudo cmake git mlocate curl wget vim gedit meld
+RUN apt install -y apt-utils net-tools build-essential ca-certificates gnupg-agent lsb-release
+RUN apt install -y apt-transport-https
+
+# ROS Neotic
+RUN sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+RUN curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+
+RUN apt-get update 
+RUN apt-get install -y ros-kinetic-desktop-full
+
+RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+
+RUN apt install -y python-rosdep python-rosinstall python-rosinstall-generator python-wstool build-essential
+RUN rosdep init
+RUN rosdep update
+
+RUN apt-get update
+RUN apt-get install -y python3-catkin-tools
+
+ARG USER_PASS
+RUN useradd --shell /bin/bash -u ${USER_ID} -o -d /home/${USER_NAME} -p ${USER_PASS} ${USER_NAME}
+
+# Set python ENV variables
+ENV PYTHONUNBUFFERED=1
+
+# Install conda 
+WORKDIR /home/${USER_NAME}/
+RUN curl -LO http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    && bash Miniconda3-latest-Linux-x86_64.sh -p /home/${USER_NAME}/miniconda -b
+RUN rm /home/${USER_NAME}/Miniconda3-latest-Linux-x86_64.sh
+ENV PATH=/home/${USER_NAME}/miniconda/bin:${PATH}

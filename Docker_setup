@@ -1,0 +1,65 @@
+FROM ubuntu:20.04
+
+RUN ["apt-get", "update"]
+RUN ["add-apt-repository", "universe"]
+
+RUN ["apt-get", "install", "-y", "ubuntu-restricted-extras", "sudo", "git", "vim", "gnome-tweak-tool", "net-tools", "mlocate", "curl", "wget", "pkg-config", "build-essential", "gdb", "cmake", "apt-transport-https", "ca-certificates", "gnupg-agent", "software-properties-common", "gedit"]
+
+#apt-get install 
+apt-get update
+add-apt-repository universe
+apt-get install -y ubuntu-restricted-extras
+apt-get install -y sudo git vim gnome-tweak-tool net-tools mlocate curl wget pkg-config build-essential gdb cmake apt-transport-https ca-certificates gnupg-agent software-properties-common gedit
+
+
+
+# ROS Neotic
+sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+
+curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+sudo apt update
+sudo apt install ros-noetic-desktop-full
+
+echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+
+
+sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+sudo apt install python3-rosdep
+sudo rosdep init
+rosdep update
+
+sudo apt-get update
+sudo apt-get install python3-catkin-tools
+
+
+###################
+
+Link: https://leimao.github.io/blog/Docker-Container-GUI-Display/
+# Allow the root user to access the running X server
+xhost +si:localuser:root
+
+# docker run with display
+docker run -it -d -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "/home/madhu/:/home/madhu" --net=host --name ros-noetic --hostname docker <image-name>
+
+# --privileged and exposing /dev will give full hardware access
+docker run -it -d -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v "/home/madhu/:/home/madhu" -v "/dev:/dev" --privileged --net=host --name ros-noetic --hostname docker <image-name>
+
+
+## To add a new user after creating the container
+
+# Create user with custom home folder
+
+$ sudo useradd -m -d /home/madhu/work/ros1 ros1
+ -> '/home/madhu/work/ros1' will become the home folder for the user
+
+# set password
+$ sudo passwd ros1
+
+# Give sudo access to the user
+$ usermod -aG sudo ros1
+
+# change permissions of all files to madhu user of madhu group
+sudo chown -hR madhu:madhu *
+
+
