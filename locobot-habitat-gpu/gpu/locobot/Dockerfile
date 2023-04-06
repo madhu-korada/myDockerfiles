@@ -29,7 +29,7 @@ RUN echo "${USER_NAME}:${USER_PASS}" | chpasswd
 
 ###################################### basic tools #####################################
 
-Run apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     curl \
     lsb-release \
     sudo \
