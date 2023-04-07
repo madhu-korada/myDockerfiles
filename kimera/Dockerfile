@@ -76,12 +76,50 @@ RUN mkdir -p ${HOME}/kimera_ws/src && cd ${HOME}/kimera_ws/ && \
 # Add workspace to bashrc for automatic sourcing of workspace.
 RUN echo 'source ${HOME}/kimera_ws/devel/setup.bash' >> ${HOME}/.bashrc
 
+WORKDIR ${HOME}/kimera_ws/src
 # Clone repo
-RUN cd ${HOME}/kimera_ws/src && git clone https://github.com/MIT-SPARK/Kimera-VIO-ROS.git && \
+RUN git clone https://github.com/MIT-SPARK/Kimera-VIO-ROS.git && \
     wstool init && wstool merge Kimera-VIO-ROS/install/kimera_vio_ros_https.rosinstall && \
     wstool update
 
-WORKDIR ${HOME}/kimera_ws/
+RUN git clone https://github.com/MIT-SPARK/Kimera-Semantics.git 
+RUN wstool merge Kimera-Semantics/install/kimera_semantics_https.rosinstall -y && \
+    wstool update
+
+RUN cd gtsam && git checkout c4184e192b4605303cc0b0d51129e470eb4b4ed1
+RUN cd Kimera-VIO && git checkout origin/feature/hydra
+
+RUN apt-get install -y ros-${ROS_DISTRO}-pcl-ros
+
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build catkin_simple'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build mesh_rviz_plugins'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build kimera_rviz_markers'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build gtsam'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build opencv3_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build opengv_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build pose_graph_tools'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build dbow2_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build cmake_external_project_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build Kimera-RPGO'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build Kimera-VIO'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build Kimera-VIO-ROS'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build glog_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build gflags_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build disparity_image_proc'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build image_undistort'
+
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build disparity_image_proc'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build eigen_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build eigen_checks'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build gflags_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build glog_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build minkindr'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build minkindr_ros'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build numpy_eigen'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build protobuf_catkin'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build catkin_boost_python_buildtool'
+RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build voxblox'
+
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; catkin build'
 # RUN cd ${HOME}/kimera_ws && catkin build
 
