@@ -24,7 +24,7 @@ fi
 
 BASH_OPTION=bash
 docker run \
-    -it \
+    -it -d \
     -e DISPLAY \
     -e QT_X11_NO_MITSHM=1 \
     -e XAUTHORITY=$XAUTH \
@@ -34,7 +34,7 @@ docker run \
     -v "/dev:/dev" \
     -v /run/udev:/run/udev \
     -v "/var/run/docker.sock:/var/run/docker.sock" \
-    --name locobot-habitat \
+    --name kimera \
     --network host \
     --privileged \
     --security-opt seccomp=unconfined \
