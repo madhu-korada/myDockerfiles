@@ -32,12 +32,14 @@ docker run \
     -v "/tmp/.X11-unix:/tmp/.X11-unix" \
     -v "/etc/localtime:/etc/localtime:ro" \
     -v "/dev:/dev" \
+    -v "/media:/media" \
+    -v "/home/madhu:/madhu" \
     -v /run/udev:/run/udev \
     -v "/var/run/docker.sock:/var/run/docker.sock" \
-    --name kimera \
+    --name rl-nav \
     --network host \
     --privileged \
     --security-opt seccomp=unconfined \
     $DOCKER_OPTS \
-    manojkorada/kimera_vio_semantics:V1.0 \
+    rl-nav:GPU \
     $BASH_OPTION
