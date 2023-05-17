@@ -1,6 +1,6 @@
 #!/bin/sh
-PARENT_IMAGE=nvidia/cuda:12.1.0-devel-ubuntu20.04
-TAG=kimera:GPU
+PARENT_IMAGE=nvidia/cuda:12.0.0-devel-ubuntu20.04
+TAG=manojkorada/kimera_vio_semantics:V2.0
 
 # INSTALL_SCRIPT="install_gpu_deps"
 USER_ID=`id -u`
